@@ -90,19 +90,22 @@ replaceStringInFile() {
   sed -i -e "s|$OLD_STR|$NEW_STR|g" $FILE_NAME
 }
 
+# This function can only be run if the context of environment variables being set
 # For file at path arg1, copy to path at arg2, replacing all occurrances of <VARIABLE> with the value of that variable
 installFileFromTemplate() {
   local FILE_NAME=$1
   local DESTINATION_DIR=$2
   local DESTINATION_FILE=$DESTINATION_DIR/$FILE_NAME
   echo "Installing $FILE_NAME at $DESTINATION_FILE"
-  cp $SCRIPT_DIR/../templates/$FILE_NAME $DESTINATION_DIR/$FILE_NAME
+  cp $SDK_DIR/templates/$FILE_NAME $DESTINATION_DIR/$FILE_NAME
+  replaceStringInFile "<SDK_DIR>" "$SDK_DIR" "$DESTINATION_FILE"
   replaceStringInFile "<BASE_DIR>" "$BASE_DIR" "$DESTINATION_FILE"
   replaceStringInFile "<ENV_DIR>" "$ENV_DIR" "$DESTINATION_FILE"
   replaceStringInFile "<ENV_NAME>" "$ENV_NAME" "$DESTINATION_FILE"
   replaceStringInFile "<DB_NAME>" "$DB_NAME" "$DESTINATION_FILE"
   replaceStringInFile "<SOURCE_FOLDER>" "$SOURCE_FOLDER" "$DESTINATION_FILE"
   replaceStringInFile "<CORE_PROJECT>" "$CORE_PROJECT" "$DESTINATION_FILE"
+  replaceStringInFile "<DISTRIBUTION_MODULE>" "$DISTRIBUTION_MODULE" "$DESTINATION_FILE"
   replaceStringInFile "<MODULE_PROJECT_FORMAT>" "$MODULE_PROJECT_FORMAT" "$DESTINATION_FILE"
   replaceStringInFile "<TOMCAT_HTTP_PORT>" "$TOMCAT_HTTP_PORT" "$DESTINATION_FILE"
   replaceStringInFile "<TOMCAT_SHUTDOWN_PORT>" "$TOMCAT_SHUTDOWN_PORT" "$DESTINATION_FILE"
@@ -114,7 +117,7 @@ createDatabase() {
   local DB_NAME=$1
   echo "Creating a new database named $DB_NAME"
   mysql -u root -proot -e "create database $DB_NAME default charset utf8; grant all privileges on $DB_NAME.* to openmrs; use $DB_NAME;"
-  mysql -u openmrs -popenmrs $DB_NAME < $SCRIPT_DIR/../databases/openmrs-1.9.sql
+  mysql -u openmrs -popenmrs $DB_NAME < $SDK_DIR/databases/openmrs-1.9.sql
 }
 
 gitCurrentBranch() {
@@ -122,16 +125,22 @@ gitCurrentBranch() {
 }
 
 gitStatus() {
-    local MINE=$(git rev-parse @)
-    local REMOTE=$(git rev-parse @{u})
-    local BASE=$(git merge-base @ @{u})
-    if [ $MINE = $REMOTE ]; then
-        echo "Up-to-date"
+    local REMOTE_REV=$(git rev-parse @{u})
+    local BASE_REV=$(git merge-base @ @{u})
+    local MY_REV=$(git rev-parse @)
+    local MY_STATUS=$(git status --porcelain)
+
+    if [ $MY_REV = $REMOTE_REV ]; then
+        if [ -z "$MY_STATUS" ]; then
+            echo "NO_CHANGES"
+        else
+            echo "NEED_TO_COMMIT"
+        fi
     elif [ $MINE = $BASE ]; then
-        echo "Need to pull"
+        echo "NEED_TO_PULL"
     elif [ $REMOTE = $BASE ]; then
-        echo "Need to push"
+        echo "NEED_TO_PUSH"
     else
-        echo "Diverged"
+        echo "DIVERGED"
     fi
 }
