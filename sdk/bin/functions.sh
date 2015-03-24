@@ -94,10 +94,12 @@ replaceStringInFile() {
 # For file at path arg1, copy to path at arg2, replacing all occurrances of <VARIABLE> with the value of that variable
 installFileFromTemplate() {
   local FILE_NAME=$1
-  local DESTINATION_DIR=$2
-  local DESTINATION_FILE=$DESTINATION_DIR/$FILE_NAME
+  local DESTINATION_FILE=$2
+  if [ -d $DESTINATION_FILE ]; then
+    DESTINATION_FILE=$DESTINATION_FILE/$FILE_NAME
+  fi
   echo "Installing $FILE_NAME at $DESTINATION_FILE"
-  cp $SDK_DIR/templates/$FILE_NAME $DESTINATION_DIR/$FILE_NAME
+  cp $SDK_DIR/templates/$FILE_NAME $DESTINATION_FILE
   replaceStringInFile "<SDK_DIR>" "$SDK_DIR" "$DESTINATION_FILE"
   replaceStringInFile "<BASE_DIR>" "$BASE_DIR" "$DESTINATION_FILE"
   replaceStringInFile "<ENV_DIR>" "$ENV_DIR" "$DESTINATION_FILE"
@@ -105,7 +107,7 @@ installFileFromTemplate() {
   replaceStringInFile "<DB_NAME>" "$DB_NAME" "$DESTINATION_FILE"
   replaceStringInFile "<SOURCE_FOLDER>" "$SOURCE_FOLDER" "$DESTINATION_FILE"
   replaceStringInFile "<CORE_PROJECT>" "$CORE_PROJECT" "$DESTINATION_FILE"
-  replaceStringInFile "<DISTRIBUTION_MODULE>" "$DISTRIBUTION_MODULE" "$DESTINATION_FILE"
+  replaceStringInFile "<DISTRIBUTION_NAME>" "$DISTRIBUTION_NAME" "$DESTINATION_FILE"
   replaceStringInFile "<MODULE_PROJECT_FORMAT>" "$MODULE_PROJECT_FORMAT" "$DESTINATION_FILE"
   replaceStringInFile "<TOMCAT_HTTP_PORT>" "$TOMCAT_HTTP_PORT" "$DESTINATION_FILE"
   replaceStringInFile "<TOMCAT_SHUTDOWN_PORT>" "$TOMCAT_SHUTDOWN_PORT" "$DESTINATION_FILE"
