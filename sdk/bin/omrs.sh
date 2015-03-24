@@ -20,7 +20,7 @@ build)
     then
       echo "The build argument expects a valid project source directory as a second argument"
     else
-      $SCRIPT_DIR/build.sh "$2"
+      $SCRIPT_DIR/build.sh "$2" "$3"
   fi
   ;;
 *)

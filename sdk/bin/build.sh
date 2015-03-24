@@ -3,6 +3,7 @@
 # DEFINE AND READ IN PARAMETERS
 
 PROJECT=$1
+RUN_TESTS=$2
 CURRENT_DIR=$(pwd)
 
 # LOAD THE APPROPRIATE ENVIRONMENT SETTINGS
@@ -29,7 +30,11 @@ cd $CODE_DIR
 git stash
 git pull --rebase
 git stash pop
-mvn clean install -DskipTests
+if [ "$RUN_TESTS" == "true" ];  then
+    mvn clean install
+else
+    mvn clean install -DskipTests
+fi
 cd $CURRENT_DIR
 
 if [ -f $CODE_DIR/webapp/target/openmrs.war ]
