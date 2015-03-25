@@ -16,14 +16,36 @@ log)
   tail -f ./tomcat/logs/catalina.out
   ;;
 build)
-  if [ -z "$2" ]
-    then
-      echo "The build argument expects a valid project source directory as a second argument"
-    else
-      $SCRIPT_DIR/build.sh "${@:2}"
-  fi
+  $SCRIPT_DIR/build.sh "${@:2}"
+  ;;
+test)
+  $SCRIPT_DIR/build.sh "${@:2}" "test" "force"
+  ;;
+distribution)
+  $SCRIPT_DIR/build.sh "${@:2}" "distribution" "force"
   ;;
 *)
-  echo "USAGE: [install, start, stop, log, build]"
+  echo "USAGE:"
+  echo ""
+  echo "  install: Installs a new environment into the directory of your choice."
+  echo ""
+  echo "  The following arguments should be run from a particular environment as your working directory:"
+  echo ""
+  echo "    start: Starts up tomcat and tails the log file"
+  echo "    stop:  Stops tomcat and terminates the process if needed"
+  echo "    log:   Tails the log file"
+  echo ""
+  echo "    The following arguments all build the artifact you specify (provided as the second argument), "
+  echo "    and update the relevant module(s) and/or war with the new versions"
+  echo ""
+  echo "    build <projectName>: Performs a mvn clean install -DskipTests."
+  echo ""
+  echo "    Note: This will not build if no changes are detected and an existing artifact is "
+  echo "    found unless you pass an additional 'force' parameter to it"
+  echo ""
+  echo "    test <projectName>:   Performs a mvn clean install"
+  echo ""
+  echo "    distribution <projectName>: Performs a mvn clean install -DskipTests -Pdistribution"
+  echo ""
   ;;
 esac

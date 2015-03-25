@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [ -z "$1" ]
+then
+  echo "Please specify the project you wish to build"
+  exit 1
+fi
+
 # DEFINE AND READ IN PARAMETERS
 CURRENT_DIR=$(pwd)
 PROJECT=$1
