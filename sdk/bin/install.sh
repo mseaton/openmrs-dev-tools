@@ -8,14 +8,24 @@ source $SDK_DIR/bin/functions.sh
 
 readFolderInput         BASE_DIR                "Installation directory" "$(pwd)"
 readEnvironment         ENV_NAME                $BASE_DIR
+readInput               DISTRIBUTION_NAME       "Distribution (mirebalais, zlemr, 19x)"
 readInput               DB_NAME                 "Database name" "openmrs_$ENV_NAME"
 readFolderInput         SOURCE_FOLDER           "Source folder" "$HOME/code"
 readInput               CORE_PROJECT            "Core Project" "openmrs-1.9.x"
 readProjectFormatInput  MODULE_PROJECT_FORMAT   "Module project format (github, moduleid)" "moduleid" "github"
-readInput               DISTRIBUTION_NAME       "Distribution (mirebalais, lacolline, 19x)" "19x"
 readInput               TOMCAT_HTTP_PORT        "Tomcat HTTP port" "8080"
 readInput               TOMCAT_SHUTDOWN_PORT    "Tomcat Shutdown port" "8005"
 readInput               DEBUG_PORT              "Tomcat Debug port" "5000"
+
+# VALIDATE DISTRIBUTION NAME
+if [ $DISTRIBUTION_NAME ]; then
+    if ! [ -f $SDK_DIR/distributions/$DISTRIBUTION_NAME.sh ]; then
+        echo "An invalid distribution was entered.  Please double check your configuration and try again"
+        exit 1
+    fi
+else
+    DISTRIBUTION_NAME="19x"
+fi
 
 # START INSTALLATION
 
@@ -66,25 +76,13 @@ fi
 
 cd $ENV_DIR
 mkdir openmrs
-installFileFromTemplate openmrs-runtime.properties $ENV_DIR
 
 mkdir $ENV_DIR/openmrs/modules
 
 echo "Installing WAR file"
 $SDK_DIR/bin/build.sh "$CORE_PROJECT"
 
-if [ $DISTRIBUTION_NAME ] && [ $DISTRIBUTION_NAME != '19x' ]; then
-
-    echo "Installing '$DISTRIBUTION_NAME' distribution"
-
-    if [ $DISTRIBUTION_NAME == 'mirebalais' ] || [ $DISTRIBUTION_NAME == 'lacolline' ]; then
-        echo "pih.config=$DISTRIBUTION_NAME" >> $ENV_DIR/openmrs-runtime.properties
-        installFileFromTemplate "feature_toggles_$DISTRIBUTION_NAME.properties" "$ENV_DIR/feature_toggles.properties"
-        $SDK_DIR/bin/build.sh "mirebalais" "distribution"
-    else
-        $SDK_DIR/bin/build.sh "$DISTRIBUTION_NAME" "distribution"
-    fi
-
-fi
+echo "Installing '$DISTRIBUTION_NAME' distribution"
+source $SDK_DIR/distributions/$DISTRIBUTION_NAME.sh
 
 echo "$ENV_NAME INSTALLATION COMPLETED."
