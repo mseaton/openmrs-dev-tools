@@ -29,8 +29,8 @@ uiFramework.developmentModules=
 EOL
 
 echo "Creating feature toggles properties file"
-touch $ENV_DIR/feature_toggles.properties
-cat > $ENV_DIR/feature_toggles.properties <<EOL
+touch $ENV_DIR/openmrs/feature_toggles.properties
+cat > $ENV_DIR/openmrs/feature_toggles.properties <<EOL
 registerTestPatient=true
 myAccountFeature=true
 consult_note_confirm_diagnoses=true
