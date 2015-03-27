@@ -21,7 +21,6 @@ then
 fi
 
 export CATALINA_BASE="<ENV_DIR>/tomcat"
-export JAVA_OPTS="$JAVA_OPTS: -Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=<DEBUG_PORT> -Djmx.http.console.for.embedded.webserver.enabled=false"
 
 /usr/share/tomcat7/bin/startup.sh
 
