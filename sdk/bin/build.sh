@@ -112,7 +112,7 @@ else
         cp $CODE_DIR/distro/target/distro/*.omod $MODULE_DIR
         echo "$PROJECT DISTRIBUTION BUILT AND DEPLOYED TO $MODULE_DIR"
     else
-        rm -f $MODULE_DIR/$ARTIFACT_NAME-*.omod
+        rm -f $MODULE_DIR/$PROJECT-*.omod
         cp $CODE_DIR/omod/target/*.omod $MODULE_DIR
         echo "$PROJECT MODULE BUILT AND DEPLOYED TO $MODULE_DIR"
     fi
