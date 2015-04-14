@@ -146,3 +146,7 @@ gitStatus() {
         echo "DIVERGED"
     fi
 }
+
+tomcatProcess() {
+    echo $(ps ax | awk '/java/ && /tomcat/ && !/awk/ {print $1}')
+}
