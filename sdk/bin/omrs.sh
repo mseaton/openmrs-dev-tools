@@ -24,6 +24,9 @@ test)
 distribution)
   $SCRIPT_DIR/build.sh "${@:2}" "distribution" "force"
   ;;
+update)
+  $SCRIPT_DIR/update.sh
+  ;;
 *)
   echo "USAGE:"
   echo ""
@@ -39,6 +42,7 @@ distribution)
   echo "    and update the relevant module(s) and/or war with the new versions"
   echo ""
   echo "    build <projectName>: Performs a mvn clean install -DskipTests."
+  echo "    update: Refreshes modules from distribution if appropriate, then performs a build on every module in the modules folder"
   echo ""
   echo "    Note: This will not build if no changes are detected and an existing artifact is "
   echo "    found unless you pass an additional 'force' parameter to it"

@@ -49,6 +49,12 @@ if [ "$MODULE_PROJECT_FORMAT" == 'github' ]; then
 fi
 
 # VALIDATE THAT THIS SEEMS LIKE A LEGITIMATE PROJECT TO BUILD
+if ! [ -d $CODE_DIR/.git ]; then
+    echo "This is not a git project.  Exiting build."
+    exit 1
+fi
+
+# VALIDATE THAT THIS SEEMS LIKE A LEGITIMATE PROJECT TO BUILD
 if ! [ -f $CODE_DIR/pom.xml ]; then
     echo "Unable to locate a valid source directory at $CODE_DIR.  Expected to find pom.xml but did not."
     exit 1

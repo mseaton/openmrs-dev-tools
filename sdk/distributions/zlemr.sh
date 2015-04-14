@@ -63,4 +63,4 @@ mirebalais.edConsult=true
 mirebalais.admissionNote=true
 EOL
 
-$SDK_DIR/bin/build.sh "mirebalais" "distribution"
+DISTRIBUTION_MODULE=mirebalais

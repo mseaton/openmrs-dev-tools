@@ -85,4 +85,9 @@ $SDK_DIR/bin/build.sh "$CORE_PROJECT"
 echo "Installing '$DISTRIBUTION_NAME' distribution"
 source $SDK_DIR/distributions/$DISTRIBUTION_NAME.sh
 
+if [ $DISTRIBUTION_MODULE ]; then
+    echo "export DISTRIBUTION_MODULE=$DISTRIBUTION_MODULE" >> "$ENV_DIR/settings.sh"
+    $SDK_DIR/bin/build.sh $DISTRIBUTION_MODULE "distribution"
+fi
+
 echo "$ENV_NAME INSTALLATION COMPLETED."
