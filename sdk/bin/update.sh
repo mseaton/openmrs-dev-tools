@@ -11,18 +11,18 @@ fi
 source $CURRENT_DIR/settings.sh
 source $SDK_DIR/bin/functions.sh
 
-# First, update distribution if there is one
-if [ $DISTRIBUTION_MODULE ]; then
-    echo "Updating distribution modules"
-    $SDK_DIR/bin/build.sh $DISTRIBUTION_MODULE "distribution"
-fi
-
-# Next, iterate over modules, update all code from github, and rebuild if necessary.  TODO: Should we force update ever?
+# Iterate over modules, update all code from github, and rebuild if necessary. This is to bring codebase all up to date
 for moduleFile in $CURRENT_DIR/openmrs/modules/*
 do
     moduleAndVersion=$(basename $moduleFile)
     dashIndex=$(expr index "$moduleAndVersion" '-')
     moduleId=${moduleAndVersion:0:dashIndex-1}
     echo "Updating $moduleId"
-    $SCRIPT_DIR/build.sh $moduleId
+    $SCRIPT_DIR/build.sh "$moduleId" "nodeploy"
 done
+
+# Update distribution if there is one
+if [ $DISTRIBUTION_MODULE ]; then
+    echo "Updating distribution modules"
+    $SDK_DIR/bin/build.sh $DISTRIBUTION_MODULE "distribution"
+fi

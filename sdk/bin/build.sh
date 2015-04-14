@@ -16,10 +16,12 @@ echo "Building $1"
 # test - if specified, will include running tests (default is to skip tests)
 # distribution - if specified, will run with distribution profile and deploy new version of all modules in distribution
 # force - if a build and update should be forced even if no changes are detected
+# nodeploy - if we want to update code and build omod, but not copy to omod folder
 
 TEST="f"
 DISTRIBUTION="f"
 FORCE_BUILD="f"
+DEPLOY_OMOD="t"
 
 for arg in "${@:2}"; do
     if [ $arg == "test" ]; then
@@ -29,6 +31,8 @@ for arg in "${@:2}"; do
         FORCE_BUILD="t"
     elif [ $arg == "force" ]; then
         FORCE_BUILD="t"
+    elif [ $arg == "nodeploy" ]; then
+        DEPLOY_OMOD="f"
     else
         "Echo unknown argument of $arg specified"
     fi
@@ -106,20 +110,24 @@ fi
 
 cd $CURRENT_DIR
 
-if [ -f $CODE_DIR/webapp/target/openmrs.war ]
-then
-    WEBAPP_DIR=$PWD/tomcat/webapps
-    cp $CODE_DIR/webapp/target/openmrs.war $WEBAPP_DIR/openmrs.war
-    echo "$PROJECT BUILT AND DEPLOYED TO $WEBAPP_DIR"
-else
-    MODULE_DIR=$PWD/openmrs/modules
-    if [ "$DISTRIBUTION" == "t" ];  then
-        rm -f $MODULE_DIR/*.omod
-        cp $CODE_DIR/distro/target/distro/*.omod $MODULE_DIR
-        echo "$PROJECT DISTRIBUTION BUILT AND DEPLOYED TO $MODULE_DIR"
+if [ "$DEPLOY_OMOD" == "t" ];  then
+
+    if [ -f $CODE_DIR/webapp/target/openmrs.war ]
+    then
+        WEBAPP_DIR=$PWD/tomcat/webapps
+        cp $CODE_DIR/webapp/target/openmrs.war $WEBAPP_DIR/openmrs.war
+        echo "$PROJECT BUILT AND DEPLOYED TO $WEBAPP_DIR"
     else
-        rm -f $MODULE_DIR/$PROJECT-*.omod
-        cp $CODE_DIR/omod/target/*.omod $MODULE_DIR
-        echo "$PROJECT MODULE BUILT AND DEPLOYED TO $MODULE_DIR"
+        MODULE_DIR=$PWD/openmrs/modules
+        if [ "$DISTRIBUTION" == "t" ];  then
+            rm -f $MODULE_DIR/*.omod
+            cp $CODE_DIR/distro/target/distro/*.omod $MODULE_DIR
+            echo "$PROJECT DISTRIBUTION BUILT AND DEPLOYED TO $MODULE_DIR"
+        else
+            rm -f $MODULE_DIR/$PROJECT-*.omod
+            cp $CODE_DIR/omod/target/*.omod $MODULE_DIR
+            echo "$PROJECT MODULE BUILT AND DEPLOYED TO $MODULE_DIR"
+        fi
     fi
+
 fi

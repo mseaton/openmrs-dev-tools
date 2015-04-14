@@ -27,6 +27,9 @@ distribution)
 update)
   $SCRIPT_DIR/update.sh
   ;;
+status)
+  $SCRIPT_DIR/status.sh
+  ;;
 *)
   echo "USAGE:"
   echo ""
@@ -43,6 +46,7 @@ update)
   echo ""
   echo "    build <projectName>: Performs a mvn clean install -DskipTests."
   echo "    update: Refreshes modules from distribution if appropriate, then performs a build on every module in the modules folder"
+  echo "    status: Provides a status of the current environment"
   echo ""
   echo "    Note: This will not build if no changes are detected and an existing artifact is "
   echo "    found unless you pass an additional 'force' parameter to it"
