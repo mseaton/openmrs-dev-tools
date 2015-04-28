@@ -8,7 +8,7 @@ source $SDK_DIR/bin/functions.sh
 
 readFolderInput         BASE_DIR                "Installation directory" "$(pwd)"
 readEnvironment         ENV_NAME                $BASE_DIR
-readInput               DISTRIBUTION_NAME       "Distribution (mirebalais, zlemr, 19x)"
+readInput               DISTRIBUTION_NAME       "Distribution (mirebalais, zlemr, base)"
 readInput               DB_NAME                 "Database name" "openmrs_$ENV_NAME"
 readFolderInput         SOURCE_FOLDER           "Source folder" "$HOME/code"
 readInput               CORE_PROJECT            "Core Project" "openmrs-1.9.x"
@@ -24,7 +24,7 @@ if [ $DISTRIBUTION_NAME ]; then
         exit 1
     fi
 else
-    DISTRIBUTION_NAME="19x"
+    DISTRIBUTION_NAME="base"
 fi
 
 # START INSTALLATION

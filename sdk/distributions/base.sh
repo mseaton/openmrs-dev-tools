@@ -16,6 +16,6 @@ auto_update_database=false
 junit.username=admin
 junit.password=Admin123
 
-uiFramework.developmentFolder=$fRSOURCE_FOLDER
+uiFramework.developmentFolder=$SOURCE_FOLDER
 uiFramework.developmentModules=
 EOL
