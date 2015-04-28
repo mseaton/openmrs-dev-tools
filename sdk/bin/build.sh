@@ -114,7 +114,11 @@ if [ "$DEPLOY_OMOD" == "t" ];  then
 
     if [ -f $CODE_DIR/webapp/target/openmrs.war ]
     then
-        WEBAPP_DIR=$PWD/tomcat/webapps
+        TOMCAT_DIR=$PWD/tomcat
+        rm -fR $TOMCAT_DIR/work/*
+        rm -fR $TOMCAT_DIR/temp/*
+        WEBAPP_DIR=$TOMCAT_DIR/webapps
+        rm -fR $WEBAPP_DIR/*
         cp $CODE_DIR/webapp/target/openmrs.war $WEBAPP_DIR/openmrs.war
         echo "$PROJECT BUILT AND DEPLOYED TO $WEBAPP_DIR"
     else
