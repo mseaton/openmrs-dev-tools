@@ -68,6 +68,8 @@ fi
 
 cd $CODE_DIR
 
+git fetch
+
 PERFORM_BUILD='f'
 GIT_STATUS=$(gitStatus)
 
