@@ -16,7 +16,7 @@ auto_update_database=false
 junit.username=admin
 junit.password=Admin123
 
-pih.config=mirebalais
+pih.config=liberia
 
 local_zl_identifier_generator_enabled=true
 local_zl_identifier_generator_prefix=Y

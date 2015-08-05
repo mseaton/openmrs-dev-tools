@@ -19,3 +19,5 @@ junit.password=Admin123
 uiFramework.developmentFolder=$SOURCE_FOLDER
 uiFramework.developmentModules=
 EOL
+
+DISTRIBUTION_MODULE=pihmalawi

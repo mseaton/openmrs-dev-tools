@@ -4,7 +4,7 @@ echo "Creating runtime properties file"
 touch $ENV_DIR/openmrs-runtime.properties
 cat > $ENV_DIR/openmrs-runtime.properties <<EOL
 
-connection.url=jdbc:mysql://localhost:3306/openmrs_$ENV_NAME?autoReconnect=true&sessionVariables=storage_engine=InnoDB&useUnicode=true&characterEncoding=UTF-8
+connection.url=jdbc:mysql://localhost:3306/$DB_NAME?autoReconnect=true&sessionVariables=storage_engine=InnoDB&useUnicode=true&characterEncoding=UTF-8
 connection.username=openmrs
 connection.password=openmrs
 
