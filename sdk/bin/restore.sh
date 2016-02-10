@@ -13,12 +13,11 @@ fi
 source $SETTINGS_FILE
 source $SDK_DIR/bin/functions.sh
 
-# Read in / update backup settings
+# Read in and update restoration environment variables
 
 readInput BU_SERVER "Backup Server" "$BACKUP_SERVER"
 readInput BU_FOLDER "Backup Folder" "$BACKUP_FOLDER"
 readInput BU_FILENAME "Backup Filename" "$BACKUP_FILE"
-
 
 replaceStringInFile "<BACKUP_SERVER>" "$BU_SERVER" "$SETTINGS_FILE"
 replaceStringInFile "<BACKUP_FOLDER>" "$BU_FOLDER" "$SETTINGS_FILE"
@@ -27,14 +26,18 @@ replaceStringInFile "BACKUP_SERVER=$BACKUP_SERVER" "BACKUP_SERVER=$BU_SERVER" "$
 replaceStringInFile "BACKUP_FOLDER=$BACKUP_FOLDER" "BACKUP_FOLDER=$BU_FOLDER" "$SETTINGS_FILE"
 replaceStringInFile "BACKUP_FILE=$BACKUP_FILE" "BACKUP_FILE=$BU_FILENAME" "$SETTINGS_FILE"
 
-
 WORKING_DIR=$BASE_DIR/temp
 rm -fR $WORKING_DIR
 mkdir $WORKING_DIR
 cd $WORKING_DIR
 
-# Get backup
+# Get backup and fail if unable to retrieve it
 scp $BU_SERVER:$BU_FOLDER/$BU_FILENAME .
+
+if ! [ -f $BU_FILENAME ]; then
+	echo "Unable to retrieve $BU_FILENAME by scp from $BU_SERVER:$BU_FOLDER/$BU_FILENAME"
+	exit 1
+fi
 
 # Extract to openmrs.sql
 7za x -so $BU_FILENAME | tar xf -
