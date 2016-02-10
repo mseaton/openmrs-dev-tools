@@ -27,6 +27,9 @@ distribution)
 update)
   $SCRIPT_DIR/update.sh
   ;;
+restore)
+  $SCRIPT_DIR/restore.sh
+  ;;
 web)
   $SCRIPT_DIR/deployWeb.sh "${@:2}"
   ;;
