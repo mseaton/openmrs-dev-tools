@@ -104,6 +104,7 @@ installFileFromTemplate() {
   replaceStringInFile "<BASE_DIR>" "$BASE_DIR" "$DESTINATION_FILE"
   replaceStringInFile "<ENV_DIR>" "$ENV_DIR" "$DESTINATION_FILE"
   replaceStringInFile "<ENV_NAME>" "$ENV_NAME" "$DESTINATION_FILE"
+  replaceStringInFile "<DB_STARTER_SQL>" "$DB_STARTER_SQL" "$DESTINATION_FILE"
   replaceStringInFile "<DB_NAME>" "$DB_NAME" "$DESTINATION_FILE"
   replaceStringInFile "<SOURCE_FOLDER>" "$SOURCE_FOLDER" "$DESTINATION_FILE"
   replaceStringInFile "<CORE_PROJECT>" "$CORE_PROJECT" "$DESTINATION_FILE"
@@ -114,12 +115,12 @@ installFileFromTemplate() {
   replaceStringInFile "<DEBUG_PORT>" "$DEBUG_PORT" "$DESTINATION_FILE"
 }
 
-# Creates a new database with name passed in as arg1, and initializes this with base 1.9 schema, and user admin/Admin123
+# Creates a new database with name passed in as arg1, starting SQL passed in as arg2
 createDatabase() {
   local DB_NAME=$1
   echo "Creating a new database named $DB_NAME"
   mysql -u root -proot -e "create database $DB_NAME default charset utf8; grant all privileges on $DB_NAME.* to openmrs; use $DB_NAME;"
-  mysql -u openmrs -popenmrs $DB_NAME < $SDK_DIR/databases/openmrs-1.9.sql
+  mysql -u openmrs -popenmrs $DB_NAME < $SDK_DIR/databases/$2
 }
 
 gitCurrentBranch() {

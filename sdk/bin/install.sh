@@ -9,6 +9,7 @@ source $SDK_DIR/bin/functions.sh
 readFolderInput         BASE_DIR                "Installation directory" "$(pwd)"
 readEnvironment         ENV_NAME                $BASE_DIR
 readInput               DISTRIBUTION_NAME       "Distribution (mirebalais, zlemr, base)"
+readInput				DB_STARTER_SQL			"Starting SQL File" "openmrs-1.9.sql"
 readInput               DB_NAME                 "Database name" "openmrs_$ENV_NAME"
 readFolderInput         SOURCE_FOLDER           "Source folder" "$HOME/code"
 readInput               CORE_PROJECT            "Core Project" "openmrs-1.9.x"
@@ -58,7 +59,7 @@ if mysql -u root -proot -e "use $DB_NAME" ; then
         [Yy]* )
           echo "Dropping existing $DB_NAME database"
           mysql -u root -proot -e "drop database $DB_NAME;"
-          createDatabase $DB_NAME
+          createDatabase $DB_NAME $DB_STARTER_SQL
           break;;
         [Nn]* )
           break;;
@@ -69,7 +70,7 @@ if mysql -u root -proot -e "use $DB_NAME" ; then
     esac
   done
 else
-  createDatabase $DB_NAME
+  createDatabase $DB_NAME $DB_STARTER_SQL
 fi
 
 # INSTALL OPENMRS
