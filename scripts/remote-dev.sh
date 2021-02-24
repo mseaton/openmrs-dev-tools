@@ -25,6 +25,26 @@ function runCommand() {
   ssh $REMOTE_HOST "cd $FOLDER && $@"
 }
 
+function mvnBuild() {
+  runCommand "mvn clean install $@"
+}
+
+function deployModule() {
+  runCommand "mvn openmrs-sdk:deploy -DserverId=$SERVER_ID -DbatchAnswers=y"
+}
+
+function deployConfig() {
+  runCommand "mvn clean compile -DserverId=$SERVER_ID"
+}
+
+function deployDistro() {
+  runCommand "mvn clean install && mvn openmrs-sdk:deploy -DserverId=$SERVER_ID -Ddistro=api/src/main/resources/openmrs-distro.properties -U"
+}
+
+function createServer() {
+  runCommand "mvn openmrs-sdk:setup -DserverId=$SERVER_ID -Ddistro=org.openmrs.module:mirebalais:1.3.0-SNAPSHOT -DjavaHome=/usr/lib/jvm/java-8-openjdk-amd64 -DbatchAnswers='8080,5000,MySQL 5.6 in SDK docker container (requires pre-installed Docker)'"
+}
+
 echo "Parsing input arguments"
 
 for i in "$@"
@@ -64,14 +84,30 @@ if [ -z $SERVER_ID ]; then
   exit 1
 fi
 
-echo "Syncing this folder with the remote server"
-syncFolder
-
 echo "Executing $OPERATION on remote server"
 
 case $OPERATION in
-    "buildDeploy")
-      runCommand "mvn clean install && mvn openmrs-sdk:deploy -DserverId=$SERVER_ID"
+    "deployModule")
+      syncFolder
+      mvnBuild
+      deployModule
+    ;;
+    "deployConfig")
+      if [[ -d '../openmrs-config-pihemr' ]]; then
+        (cd "../openmrs-config-pihemr" && syncFolder)
+        mvnBuild "-f ../openmrs-config-pihemr/pom.xml"
+      fi
+      syncFolder
+      mvnBuild
+      deployConfig
+    ;;
+    "updateDistro")
+      syncFolder
+      mvnBuild
+      deployDistro
+    ;;
+    "createServer")
+      createServer
     ;;
     *)
       echo "Unknown command"
