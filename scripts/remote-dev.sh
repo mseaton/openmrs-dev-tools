@@ -92,6 +92,11 @@ case $OPERATION in
       mvnBuild
       deployModule
     ;;
+    "deployModuleSkipTests")
+      syncFolder
+      mvnBuild "-DskipTests"
+      deployModule
+    ;;
     "deployConfig")
       if [[ -d '../openmrs-config-pihemr' ]]; then
         (cd "../openmrs-config-pihemr" && syncFolder)
