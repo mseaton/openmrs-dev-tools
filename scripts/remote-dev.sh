@@ -8,10 +8,11 @@ RETURN_CODE=0
 OPERATION=""
 SERVER_ID=""
 REMOTE_HOST=""
+BUILD_ARGS=""
 
 function usage() {
   echo "USAGE:"
-  echo "remote-dev --remoteHost=mytestserver.org --operation=buildDeploy --serverId=myserver"
+  echo "remote-dev --remoteHost=mytestserver.org --operation=buildDeploy --buildArgs=-DskipTests --serverId=myserver"
 }
 
 function syncFolder() {
@@ -26,7 +27,7 @@ function runCommand() {
 }
 
 function mvnBuild() {
-  runCommand "mvn clean install $@"
+  runCommand "mvn clean install $BUILD_ARGS"
 }
 
 function deployModule() {
@@ -62,6 +63,10 @@ case $i in
       REMOTE_HOST="${i#*=}"
       shift # past argument=value
     ;;
+    --buildArgs=*)
+      BUILD_ARGS="${i#*=}"
+      shift # past argument=value
+    ;;
     *)
       usage    # unknown option
       exit 1
@@ -87,14 +92,13 @@ fi
 echo "Executing $OPERATION on remote server"
 
 case $OPERATION in
+    "mvnBuild")
+      syncFolder
+      mvnBuild
+    ;;
     "deployModule")
       syncFolder
       mvnBuild
-      deployModule
-    ;;
-    "deployModuleSkipTests")
-      syncFolder
-      mvnBuild "-DskipTests"
       deployModule
     ;;
     "deployConfig")
