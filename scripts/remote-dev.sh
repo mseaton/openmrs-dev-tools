@@ -35,7 +35,7 @@ function deployModule() {
 }
 
 function deployConfig() {
-  runCommand "mvn clean compile -DserverId=$SERVER_ID"
+  runCommand "./install.sh $SERVER_ID"
 }
 
 function deployDistro() {
